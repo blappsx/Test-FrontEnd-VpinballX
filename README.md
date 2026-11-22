@@ -18,7 +18,7 @@ Pour démarrer directement depuis l’exécutable :
 
 ```powershell
 Copy-Item .\config.toml .\target\release\config.toml
-.\target\release\pinready-frontend.exe
+.\target\release\test-frontend-vpinballx.exe
 ```
 
 L’exécutable accepte aussi le chemin d’un autre fichier de configuration en premier argument. Les chemins relatifs sont résolus depuis le dossier de configuration, sauf un simple nom de commande FFmpeg, recherché dans le PATH. Conserver les apostrophes dans le TOML pour les chemins Windows.
@@ -35,7 +35,7 @@ cargo build --release --features eframe/x11,eframe/wayland
 Copier `config.example.toml` vers `config.toml`. Renseigner le chemin du dossier des tables, celui de l’exécutable VPX Linux et `ffmpeg = 'ffmpeg'`. Pour un seul écran, retirer `backglass_monitor`. Démarrer depuis la racine du projet :
 
 ```sh
-./target/release/pinready-frontend ./config.toml
+./target/release/test-frontend-vpinballx ./config.toml
 ```
 
 ## Utilisation

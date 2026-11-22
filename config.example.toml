@@ -1,4 +1,4 @@
-tables = 'C:\vPinball\PinReady\Tables'
+tables = 'C:\vPinball\Tables'
 executable = 'C:\vPinball\VisualPinball\VPinballX64.exe'
 arguments = ["-play", "{table}"]
 ffmpeg = 'ffmpeg.exe'

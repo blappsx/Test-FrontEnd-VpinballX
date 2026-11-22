@@ -337,7 +337,7 @@ impl Frontend {
         ctx.show_viewport_deferred(
             egui::ViewportId::from_hash_of("backglass"),
             ViewportBuilder::default()
-                .with_title("PinReady Backglass")
+                .with_title("Test FrontEnd VpinballX - Backglass")
                 .with_monitor(monitor)
                 .with_decorations(false)
                 .with_active(false)
@@ -528,13 +528,13 @@ fn run() -> Result<(), Box<dyn Error>> {
     let tables = scan(&config.tables)?;
     let native = eframe::NativeOptions {
         viewport: ViewportBuilder::default()
-            .with_title("PinReady")
+            .with_title("Test FrontEnd VpinballX")
             .with_monitor(config.playfield_monitor)
             .with_decorations(false),
         renderer: eframe::Renderer::Glow,
         ..Default::default()
     };
-    eframe::run_native("PinReady", native, Box::new(move |creation| {
+    eframe::run_native("Test FrontEnd VpinballX", native, Box::new(move |creation| {
         let mut app = Frontend {
             config, tables, selected: 0, scroll: None, wheels: HashMap::new(), backglass: None,
             video: None, previous_video: None, video_fade_started: None,

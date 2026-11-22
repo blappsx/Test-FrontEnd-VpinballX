@@ -25,10 +25,10 @@ jobs:
         run: cargo +stable build --release --features eframe/x11,eframe/wayland
       - name: Package Linux executable
         run: |
-          file target/release/pinready-frontend
-          tar -czf pinready-frontend-linux-x64.tar.gz -C target/release pinready-frontend
+          file target/release/test-frontend-vpinballx
+          tar -czf test-frontend-vpinballx-linux-x64.tar.gz -C target/release test-frontend-vpinballx
       - uses: actions/upload-artifact@v4
         with:
-          name: pinready-frontend-linux-x64
-          path: pinready-frontend-linux-x64.tar.gz
+          name: test-frontend-vpinballx-linux-x64
+          path: test-frontend-vpinballx-linux-x64.tar.gz
           if-no-files-found: error
