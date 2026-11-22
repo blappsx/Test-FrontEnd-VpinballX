@@ -1,6 +1,6 @@
 # Test FrontEnd VpinballX
 
-Frontend Rust pour Windows. Il lit chaque sous-dossier direct de `tables` comme une table VPX. Il choisit en priorité le fichier VPX portant le nom du dossier, ou l’unique fichier VPX du dossier. Avec plusieurs VPX sans correspondance exacte, le dossier est ignoré et signalé dans la console.
+Frontend Rust pour Visual Pinball X. Il lit chaque sous-dossier direct de `tables` comme une table VPX. Il choisit en priorité le fichier VPX portant le nom du dossier, ou l’unique fichier VPX du dossier. Avec plusieurs VPX sans correspondance exacte, le dossier est ignoré et signalé dans la console.
 
 ## Démarrage
 
@@ -22,6 +22,21 @@ Copy-Item .\config.toml .\target\release\config.toml
 ```
 
 L’exécutable accepte aussi le chemin d’un autre fichier de configuration en premier argument. Les chemins relatifs sont résolus depuis le dossier de configuration, sauf un simple nom de commande FFmpeg, recherché dans le PATH. Conserver les apostrophes dans le TOML pour les chemins Windows.
+
+## Compilation sur Linux
+
+Installer Rust 1.95 ou plus récent, un compilateur C et les bibliothèques de développement X11, Wayland et OpenGL. Sous Debian ou Ubuntu :
+
+```sh
+sudo apt install build-essential pkg-config libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxkbcommon-dev libwayland-dev libgl1-mesa-dev ffmpeg
+cargo build --release --features eframe/x11,eframe/wayland
+```
+
+Copier `config.example.toml` vers `config.toml`. Renseigner le chemin du dossier des tables, celui de l’exécutable VPX Linux et `ffmpeg = 'ffmpeg'`. Pour un seul écran, retirer `backglass_monitor`. Démarrer depuis la racine du projet :
+
+```sh
+./target/release/pinready-frontend ./config.toml
+```
 
 ## Utilisation
 

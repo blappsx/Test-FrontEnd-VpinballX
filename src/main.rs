@@ -12,6 +12,7 @@ use std::{
 };
 use video::{Audio, Video};
 
+#[cfg(windows)]
 #[link(name = "user32")]
 unsafe extern "system" {
     fn GetSystemMetrics(index: i32) -> i32;
@@ -511,14 +512,19 @@ fn run() -> Result<(), Box<dyn Error>> {
     let path = std::env::args_os().nth(1).map(PathBuf::from)
         .unwrap_or(std::env::current_exe()?.with_file_name("config.toml"));
     let path = std::path::absolute(path)?;
-    let mut config = Config::read(&path)?;
-    let monitors = unsafe { GetSystemMetrics(80) }.max(1) as usize; // SM_CMONITORS
-    if config.playfield_monitor >= monitors {
-        return Err(format!("Écran playfield introuvable ({} écran(s) détecté(s)).", monitors).into());
-    }
-    config.backglass_monitor = config.backglass_monitor.filter(|&index| {
-        index < monitors && index != config.playfield_monitor
-    });
+    let config = Config::read(&path)?;
+    #[cfg(windows)]
+    let config = {
+        let mut config = config;
+        let monitors = unsafe { GetSystemMetrics(80) }.max(1) as usize; // SM_CMONITORS
+        if config.playfield_monitor >= monitors {
+            return Err(format!("Écran playfield introuvable ({} écran(s) détecté(s)).", monitors).into());
+        }
+        config.backglass_monitor = config.backglass_monitor.filter(|&index| index < monitors);
+        config
+    };
+    let backglass_monitor = config.backglass_monitor.filter(|&index| index != config.playfield_monitor);
+    let config = Config { backglass_monitor, ..config };
     let tables = scan(&config.tables)?;
     let native = eframe::NativeOptions {
         viewport: ViewportBuilder::default()

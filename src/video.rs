@@ -1,12 +1,25 @@
 use eframe::egui;
 use std::{
     io::{self, Read},
-    os::windows::process::CommandExt,
     path::Path,
     process::{Child, Command, Stdio},
     sync::{Arc, Mutex},
     thread,
 };
+
+#[cfg(windows)]
+use std::os::windows::process::CommandExt;
+
+fn media_command(program: &Path) -> Command {
+    let command = Command::new(program);
+    #[cfg(windows)]
+    let command = {
+        let mut command = command;
+        command.creation_flags(0x08000000); // CREATE_NO_WINDOW
+        command
+    };
+    command
+}
 
 #[derive(Default)]
 struct Frames {
@@ -35,8 +48,7 @@ impl Video {
         let filter = format!(
             "fps=24,scale={width}:{height}:force_original_aspect_ratio=decrease:force_divisible_by=2:reset_sar=1,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2,format=rgb24"
         );
-        let mut child = Command::new(ffmpeg)
-            .creation_flags(0x08000000) // CREATE_NO_WINDOW
+        let mut child = media_command(ffmpeg)
             .args(["-nostdin", "-loglevel", "error", "-re", "-stream_loop", "-1", "-i"])
             .arg(path)
             .args([
@@ -95,9 +107,8 @@ pub struct Audio(Child);
 
 impl Audio {
     pub fn open(ffmpeg: &Path, track: &Path) -> io::Result<Self> {
-        let player = ffmpeg.with_file_name("ffplay.exe");
-        Command::new(player)
-            .creation_flags(0x08000000) // CREATE_NO_WINDOW
+        let player = ffmpeg.with_file_name(format!("ffplay{}", std::env::consts::EXE_SUFFIX));
+        media_command(&player)
             .args(["-loglevel", "error", "-nodisp", "-vn", "-loop", "0"])
             .arg(track)
             .stdin(Stdio::null())
